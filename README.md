@@ -90,15 +90,9 @@ Install all the required Python packages from the `requirements.txt` file.
 pip install -r requirements.txt
 ```
 
-### 5. Configure API Key
 
-This project uses the MapTiler API for maps and geocoding.
 
-1.  Get a free API key from MapTiler.com.
-2.  Open the file `static/js/location-input.js`.
-3.  Find the line `const MAPTILER_API_KEY = 'pRYii1ILboCHuSTYI4rY';` and replace the placeholder key with your own.
-
-### 6. Run the Application
+### 5. Run the Application
 
 Once the dependencies are installed and the API key is configured, you can start the Flask server.
 

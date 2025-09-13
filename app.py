@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests from frontend
 
 # Configure the database file
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rtrwh_data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -587,5 +587,4 @@ if __name__ == '__main__':
     with app.app_context():
         # Create the database tables if they don't exist
         db.create_all()
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True, port=5000)

@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feasibility Report - Rooftop Rainwater Harvesting</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Enhanced animations and effects */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(120deg); }
+      66% { transform: translateY(-10px) rotate(240deg); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200px 0; }
+      100% { background-position: calc(200px + 100%) 0; }
+    }
+    
+    .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+    .animate-slideInLeft { animation: slideInLeft 0.6s ease-out forwards; }
+    .animate-slideInRight { animation: slideInRight 0.6s ease-out forwards; }
+    .animate-pulse { animation: pulse 2s ease-in-out infinite; }
+    
+    /* Enhanced gradient background */
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* Background particles */
+    .bg-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .particle {
+      position: absolute;
+      background: rgba(34, 211, 238, 0.1);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Header styling */
+    .report-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .report-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -200px;
+      width: 200px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.1), transparent);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    
+    .report-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #22d3ee;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+    }
+    
+    .report-subtitle {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 1rem;
+    }
+    
+    /* Enhanced card styling */
+    .report-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .report-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 35px 55px rgba(0, 0, 0, 0.15);
+    }
+    
+    .report-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #22d3ee, #06b6d4, #0891b2);
+      border-radius: 20px 20px 0 0;
+    }
+    
+    /* Section headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(34, 211, 238, 0.2);
+    }
+    
+    .section-icon {
+      font-size: 1.8rem;
+      color: #22d3ee;
+      background: rgba(34, 211, 238, 0.1);
+      padding: 1rem;
+      border-radius: 12px;
+      min-width: 60px;
+      text-align: center;
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    /* Status indicators */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      font-weight: bold;
+      margin: 0.5rem 0;
+      backdrop-filter: blur(10px);
+      border: 1px solid;
+    }
+    
+    .status-fully {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #10b981;
+    }
+    
+    .status-partially {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+    }
+    
+    .status-not {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+    }
+    
+    .status-limited {
+      background: rgba(217, 119, 6, 0.2);
+      border-color: rgba(217, 119, 6, 0.4);
+      color: #d97706;
+    }
+    
+    /* Info cards grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .info-item {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .info-item:hover {
+      background: rgba(34, 211, 238, 0.1);
+      border-color: rgba(34, 211, 238, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .info-item .icon {
+      font-size: 2rem;
+      color: #22d3ee;
+      margin-bottom: 1rem;
+    }
+    
+    .info-item .label {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .info-item .value {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    
+    /* Disclaimer styling */
+    .disclaimer {
+      background: rgba(245, 158, 11, 0.15);
+      border: 2px solid rgba(245, 158, 11, 0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    
+    .disclaimer::before {
+      content: '';
+      position: absolute;
+      left: 1.5rem;
+      top: 1.5rem;
+      width: 4px;
+      height: calc(100% - 3rem);
+      background: #f59e0b;
+      border-radius: 2px;
+    }
+    
+    .disclaimer-content {
+      margin-left: 1.5rem;
+    }
+    
+    .disclaimer .icon {
+      color: #f59e0b;
+      font-size: 1.2rem;
+      margin-right: 0.5rem;
+    }
+    
+    /* Recommendation boxes */
+    .recommendation {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-left: 4px solid;
+      position: relative;
+    }
+    
+    .recommendation.status-fully { border-color: #10b981; }
+    .recommendation.status-partially { border-color: #f59e0b; }
+    .recommendation.status-not { border-color: #ef4444; }
+    .recommendation.status-limited { border-color: #d97706; }
+    
+    /* Chart container */
+    .chart-container {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 1.5rem 0;
+      position: relative;
+      height: 400px;
+    }
+    
+    /* Structure cards */
+    .structure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .structure-card {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .structure-card:hover {
+      background: rgba(34, 211, 238, 0.1);
+      border-color: rgba(34, 211, 238, 0.3);
+      transform: translateY(-3px);
+    }
+    
+    .structure-card .icon {
+      font-size: 3rem;
+      color: #22d3ee;
+      margin-bottom: 1rem;
+    }
+    
+    .structure-card .title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1rem;
+    }
+    
+    /* Treatment sequence */
+    .treatment-sequence {
+      display: grid;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .treatment-step {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      border-left: 4px solid #22d3ee;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .treatment-step:hover {
+      background: rgba(34, 211, 238, 0.1);
+      transform: translateX(5px);
+    }
+    
+    .treatment-step .step-number {
+      background: #22d3ee;
+      color: #0f172a;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    
+    /* Water illustration */
+    .water-illustration {
+      text-align: center;
+      margin: 2rem 0;
+      padding: 2rem;
+      background: rgba(34, 211, 238, 0.05);
+      border-radius: 20px;
+      border: 2px dashed rgba(34, 211, 238, 0.3);
+    }
+    
+    .water-drops {
+      font-size: 4rem;
+      color: #22d3ee;
+      margin-bottom: 1rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    /* Buttons */
+    .glass-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background: rgba(34, 211, 238, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      border-radius: 25px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 1rem;
+    }
+    
+    .glass-button:hover {
+      background: rgba(34, 211, 238, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(34, 211, 238, 0.2);
+    }
+    
+    .glass-button.primary {
+      background: rgba(34, 211, 238, 0.3);
+      border-color: rgba(34, 211, 238, 0.5);
+    }
+    
+    /* Action buttons container */
+    .action-buttons {
+      text-align: center;
+      margin: 3rem 0;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .report-title { font-size: 2rem; }
+      .info-grid { grid-template-columns: 1fr; }
+      .structure-grid { grid-template-columns: 1fr; }
+      .action-buttons { 
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .glass-button { width: 100%; justify-content: center; }
+    }
+    
+    /* Print styles */
+    @media print {
+      body { background: white; color: black; }
+      .report-card { 
+        background: white; 
+        border: 2px solid #ddd; 
+        box-shadow: none;
+        page-break-inside: avoid;
+      }
+      .glass-button { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background particles -->
+  <div class="bg-particles" id="particles"></div>
+
+  <div class="container">
+    <!-- Enhanced Header -->
+    <div class="report-header animate-fadeInUp">
+      <div class="water-illustration">
+        <div class="water-drops">💧 🏠 💧</div>
+      </div>
+      <h1 class="report-title">
+        <i class="fas fa-chart-line"></i>
+        RTRWH Feasibility Report
+      </h1>
+      <p class="report-subtitle">Comprehensive Rainwater Harvesting Assessment</p>
+      <div class="status-indicator status-fully">
+        <i class="fas fa-check-circle"></i>
+        Analysis Complete
+      </div>
+    </div>
+
+    <!-- User Details -->
+    <div class="report-card animate-slideInLeft">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <h2 class="section-title">Your Property Details</h2>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-user"></i></div>
+          <div class="label">Property Owner</div>
+          <div class="value">{{ user_data.name }}</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="label">Location</div>
+          <div class="value">{{ user_data.location_name.split(',')[0] }}</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-users"></i></div>
+          <div class="label">Household Size</div>
+          <div class="value">{{ user_data.household_size }} People</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-home"></i></div>
+          <div class="label">Rooftop Area</div>
+          <div class="value">{{ user_data.rooftop_area | round(1) }} m²</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-expand-arrows-alt"></i></div>
+          <div class="label">Open Space</div>
+          <div class="value">{{ user_data.open_space_area | round(1) }} m²</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-building"></i></div>
+          <div class="label">Property Type</div>
+          <div class="value">{{ user_data.property_type }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location Analysis -->
+    <div class="report-card animate-slideInRight">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-globe-asia"></i>
+        </div>
+        <h2 class="section-title">Location Analysis</h2>
+      </div>
+      
+      <div class="disclaimer">
+        <div class="disclaimer-content">
+          <i class="fas fa-info-circle icon"></i>
+          <strong>Data Source:</strong> Analysis based on data for <strong>{{ location_data.Region_Name }}</strong>. 
+          This is a prototype simulation.
+        </div>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-cloud-rain"></i></div>
+          <div class="label">Annual Rainfall</div>
+          <div class="value">{{ location_data.Rainfall_mm | round }} mm</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-mountain"></i></div>
+          <div class="label">Soil Type</div>
+          <div class="value">{{ location_data.Soil_Type }}</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-tint"></i></div>
+          <div class="label">Groundwater Depth</div>
+          <div class="value">{{ location_data.Groundwater_Depth_m }} meters</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-road"></i></div>
+          <div class="label">Distance to Data Point</div>
+          <div class="value">{{ location_data.distance | round(1) }} km</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hydrogeological Data -->
+    <div class="report-card animate-fadeInUp">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-layer-group"></i>
+        </div>
+        <h2 class="section-title">Hydrogeological Profile</h2>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-water"></i></div>
+          <div class="label">Aquifer Type</div>
+          <div class="value">{{ location_data.Aquifer_Type }}</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-arrows-alt-v"></i></div>
+          <div class="label">Aquifer Depth</div>
+          <div class="value">{{ location_data.Aquifer_Depth_Min_m }} - {{ location_data.Aquifer_Depth_Max_m }} meters</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-filter"></i></div>
+          <div class="label">Infiltration Rate</div>
+          <div class="value">{{ location_data.Infiltration_Rate_mm_per_hr }} mm/hr</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-certificate"></i></div>
+          <div class="label">Water Quality</div>
+          <div class="value">{{ location_data.Water_Quality }}</div>
+        </div>
+      </div>
+      
+      <div class="recommendation status-{{ 'fully' if analysis.safety_check.is_safe else 'not' }}">
+        <i class="fas fa-thumbs-up"></i>
+        <strong>Remarks:</strong> {{ location_data.Remarks }}
+      </div>
+    </div>
+
+    <!-- Feasibility Results -->
+    <div class="report-card animate-slideInLeft">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-calculator"></i>
+        </div>
+        <h2 class="section-title">Feasibility Assessment</h2>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-cloud-rain"></i></div>
+          <div class="label">Annual Harvest Potential</div>
+          <div class="value">{{ "{:,.0f}".format(analysis.runoff_data.annual_liters) }} Liters</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-home"></i></div>
+          <div class="label">Household Demand</div>
+          <div class="value">{{ "{:,.0f}".format(analysis.annual_demand) }} Liters</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-percentage"></i></div>
+          <div class="label">Demand Coverage</div>
+          <div class="value">{{ analysis.feasibility_percentage }}%</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-check-circle"></i></div>
+          <div class="label">Feasibility Status</div>
+          <div class="value status-{{ analysis.feasibility_status.lower().split(' ')[0] }}">{{ analysis.feasibility_status }}</div>
+        </div>
+      </div>
+      
+      <div class="recommendation status-{{ analysis.feasibility_status.lower().split(' ')[0] }}">
+        <i class="fas fa-star"></i>
+        <strong>Summary:</strong> 
+        {% if analysis.feasibility_status == "Fully Feasible" %} Your property can likely meet its entire water demand through rainwater harvesting.
+        {% elif analysis.feasibility_status == "Partially Feasible" %} Your property can significantly reduce its reliance on external water sources. A system is highly recommended.
+        {% else %} While harvesting may not meet all demand, it can still provide a useful supplementary water source.
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Chart Visualization -->
+    <div class="report-card animate-slideInRight">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-chart-bar"></i>
+        </div>
+        <h2 class="section-title">Supply vs. Demand Analysis</h2>
+      </div>
+      
+      <div class="chart-container">
+        <canvas id="feasibilityChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="report-card animate-fadeInUp">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-lightbulb"></i>
+        </div>
+        <h2 class="section-title">Personalized Recommendations</h2>
+      </div>
+      
+      <div class="info-item">
+        <div class="icon"><i class="fas fa-medal"></i></div>
+        <div class="label">Category {{ analysis.category.category }}: {{ analysis.category.name }}</div>
+        <div class="value">{{ analysis.category.description }}</div>
+      </div>
+      
+      <h3 style="color: #22d3ee; margin: 2rem 0 1rem 0;">
+        <i class="fas fa-tools"></i> Recommended Structures
+      </h3>
+      
+      <div class="structure-grid">
+        {% for structure in analysis.category.recommended_structures %}
+          <div class="structure-card">
+            {% if 'tank' in structure.lower() %}<div class="icon"><i class="fas fa-cube"></i></div>
+            {% elif 'pit' in structure.lower() %}<div class="icon"><i class="fas fa-hole"></i></div>
+            {% elif 'trench' in structure.lower() %}<div class="icon"><i class="fas fa-ruler-horizontal"></i></div>
+            {% else %}<div class="icon"><i class="fas fa-stream"></i></div>
+            {% endif %}
+            <div class="title">{{ structure.split('(')[0] }}</div>
+            <p>{{ structure }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Safety Analysis -->
+    <div class="report-card animate-slideInLeft">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h2 class="section-title">Safety Assessment</h2>
+      </div>
+      
+      {% if analysis.safety_check.is_safe %}
+      <div class="status-indicator status-fully">
+        <i class="fas fa-check-circle"></i>
+        Groundwater recharge is safe for your location
+      </div>
+      <div class="recommendation status-fully">
+        <i class="fas fa-thumbs-up"></i>
+        <strong>All Clear:</strong> No significant geological or environmental risks detected. Artificial recharge is likely safe to implement.
+      </div>
+      {% else %}
+      <div class="status-indicator status-not">
+        <i class="fas fa-exclamation-triangle"></i>
+        Caution Advised for Groundwater Recharge
+      </div>
+      <div class="recommendation status-not">
+        <strong>Potential Issues:</strong> {{ analysis.safety_check.safety_issues | join(', ') }}. Consider these alternatives: {{ analysis.safety_check.alternatives | join(', ') }}.
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Structure Dimensions -->
+    <div class="report-card animate-slideInRight">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-ruler-combined"></i>
+        </div>
+        <h2 class="section-title">Recommended Dimensions & Costs</h2>
+      </div>
+      
+      <div class="structure-grid">
+        <div class="structure-card">
+          <div class="icon"><i class="fas fa-cube"></i></div>
+          <div class="title">Storage Tank</div>
+          <div class="info-grid" style="grid-template-columns: 1fr; gap: 0.5rem; margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between;">
+              <span>Capacity:</span>
+              <strong>{{ "{:,.0f}".format(analysis.structure_dimensions.storage.capacity_liters) }} Liters</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Estimated Cost:</span>
+              <strong>{{ analysis.structure_dimensions.storage.material_cost }}</strong>
+            </div>
+          </div>
+        </div>
+        
+        {% if analysis.structure_dimensions.pit %}
+        <div class="structure-card">
+          <div class="icon"><i class="fas fa-hole"></i></div>
+          <div class="title">Recharge Pit</div>
+          <div class="info-grid" style="grid-template-columns: 1fr; gap: 0.5rem; margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between;">
+              <span>Dimensions:</span>
+              <strong>{{ analysis.structure_dimensions.pit.length_m }}m × {{ analysis.structure_dimensions.pit.width_m }}m × {{ analysis.structure_dimensions.pit.depth_m }}m</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Estimated Cost:</span>
+              <strong>{{ analysis.structure_dimensions.pit.material_cost }}</strong>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Water Treatment -->
+    <div class="report-card animate-fadeInUp">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-filter"></i>
+        </div>
+        <h2 class="section-title">Water Purification Plan</h2>
+      </div>
+      
+      <p style="margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.8);">
+        <strong>For your intended use:</strong> {{ user_data.intended_use }}
+      </p>
+      
+      <h3 style="color: #22d3ee; margin-bottom: 1rem;">Treatment Sequence:</h3>
+      
+      <div class="treatment-sequence">
+        {% for step in analysis.purification.treatment_sequence %}
+          <div class="treatment-step">
+            <div class="step-number">{{ loop.index }}</div>
+            <div>
+              <strong>{{ step.split(' - ')[0] }}</strong><br>
+              <small>{{ step.split(' - ')[1] }}</small>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-calendar-alt"></i></div>
+          <div class="label">Maintenance Schedule</div>
+          <div class="value">{{ analysis.purification.maintenance_schedule }}</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-rupee-sign"></i></div>
+          <div class="label">Treatment System Cost</div>
+          <div class="value">{{ analysis.purification.estimated_cost }}</div>
+        </div>
+      </div>
+    </div>
+
+   
+
+    <!-- Financial Analysis -->
+    <div class="report-card animate-slideInRight">
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="fas fa-chart-pie"></i>
+        </div>
+        <h2 class="section-title">Financial Analysis</h2>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-hammer"></i></div>
+          <div class="label">Initial Investment</div>
+          <div class="value">₹{{ "{:,.0f}".format(analysis.cost_analysis.total_construction_cost) }}</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-piggy-bank"></i></div>
+          <div class="label">Annual Savings</div>
+          <div class="value">₹{{ "{:,.0f}".format(analysis.cost_analysis.annual_net_savings) }}</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-clock"></i></div>
+          <div class="label">Payback Period</div>
+          <div class="value">{{ analysis.cost_analysis.payback_years }} years</div>
+        </div>
+        <div class="info-item">
+          <div class="icon"><i class="fas fa-trophy"></i></div>
+          <div class="label">ROI (20 years)</div>
+          <div class="value">{{ analysis.cost_analysis.roi_percentage }}%</div>
+        </div>
+      </div>
+      
+      <div class="recommendation status-fully">
+        <i class="fas fa-thumbs-up"></i>
+        <strong>Financially Viable:</strong> The system will pay for itself within {{ analysis.cost_analysis.payback_years }} years 
+        and provide significant long-term savings on water costs.
+      </div>
+    </div>
+
+           
+    
+    <!-- Action Buttons -->
+    <div class="action-buttons animate-fadeInUp">
+      <h3 style="color: #22d3ee; margin-bottom: 2rem; text-align: center;">
+        <i class="fas fa-hands-helping"></i>
+        Take Action Today
+      </h3>
+      
+      <a href="{{ url_for('download_report', entry_id=user_data.id) }}" class="glass-button primary">
+        <i class="fas fa-download"></i>
+        Download PDF Report
+      </a>
+      
+      <a href="{{ url_for('subsidy_checker_page') }}?state={{ location_data.State }}&plotSize={{ (user_data.rooftop_area + user_data.open_space_area)|round }}&location=urban&buildingType={{ user_data.property_type.lower().replace('institutional', 'government') }}" class="glass-button">
+        <i class="fas fa-hand-holding-usd"></i>
+        Check Subsidy Eligibility
+      </a>
+      
+      <a href="{{ url_for('index_page') }}" class="glass-button">
+        <i class="fas fa-redo"></i>
+        New Assessment
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align: center; margin: 3rem 0 2rem 0; padding: 2rem; background: rgba(255, 255, 255, 0.05); border-radius: 12px;">
+      <p style="color: rgba(255, 255, 255, 0.6); margin: 0;">
+        <i class="fas fa-leaf" style="color: #10b981; margin-right: 0.5rem;"></i>
+        Supporting sustainable water management across India
+      </p>
+      <p style="color: rgba(255, 255, 255, 0.4); margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+        Report generated on: <span id="currentDate"></span>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Create background particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.width = Math.random() * 4 + 2 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.animationDuration = Math.random() * 3 + 3 + 's';
+        particle.style.animationDelay = Math.random() * 2 + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Initialize particles
+    createParticles();
+
+    // Set current date
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Enhanced Chart
+    const ctx = document.getElementById('feasibilityChart').getContext('2d');
+    
+    // Create gradient for the chart
+    const gradient1 = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient1.addColorStop(0, 'rgba(34, 211, 238, 0.8)');
+    gradient1.addColorStop(1, 'rgba(34, 211, 238, 0.2)');
+    
+    const gradient2 = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient2.addColorStop(0, 'rgba(239, 68, 68, 0.8)');
+    gradient2.addColorStop(1, 'rgba(239, 68, 68, 0.2)');
+
+    const feasibilityChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Annual Water Analysis'],
+        datasets: [{
+          label: 'Rainwater Harvest Potential',
+          data: [{{ analysis.runoff_data.annual_liters }}],
+          backgroundColor: gradient1,
+          borderColor: 'rgba(34, 211, 238, 1)',
+          borderWidth: 2,
+          borderRadius: 8,
+          borderSkipped: false,
+        }, {
+          label: 'Household Water Demand',
+          data: [{{ analysis.annual_demand }}],
+          backgroundColor: gradient2,
+          borderColor: 'rgba(239, 68, 68, 1)',
+          borderWidth: 2,
+          borderRadius: 8,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: 'rgba(255, 255, 255, 0.9)',
+              font: {
+                size: 14,
+                weight: 'bold'
+              },
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(30, 41, 59, 0.95)',
+            titleColor: '#22d3ee',
+            bodyColor: 'rgba(255, 255, 255, 0.9)',
+            borderColor: 'rgba(34, 211, 238, 0.3)',
+            borderWidth: 1,
+            cornerRadius: 8,
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  label += context.parsed.y.toLocaleString('en-IN') + ' Liters';
+                }
+                return label;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: 'rgba(255, 255, 255, 0.7)',
+              font: {
+                size: 12
+              },
+              callback: function(value) {
+                return (value / 1000) + 'K L';
+              }
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)',
+              drawBorder: false
+            }
+          },
+          x: {
+            ticks: { 
+              color: 'rgba(255, 255, 255, 0.7)',
+              font: {
+                size: 12,
+                weight: 'bold'
+              }
+            },
+            grid: { 
+              display: false 
+            }
+          }
+        },
+        animation: {
+          duration: 2000,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // Add smooth scroll for any internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add animation trigger on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe all cards for animation
+    document.querySelectorAll('.report-card').forEach(card => {
+      observer.observe(card);
+    });
+
+    // Print functionality
+    window.addEventListener('beforeprint', () => {
+      document.body.classList.add('printing');
+    });
+
+    window.addEventListener('afterprint', () => {
+      document.body.classList.remove('printing');
+    });
+  </script>
+</body>
+</html>

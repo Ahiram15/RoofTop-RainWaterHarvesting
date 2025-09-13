@@ -1,0 +1,85 @@
+Region_Name,State,Latitude,Longitude,Rainfall_mm,Groundwater_Depth_m,Aquifer_Type,Aquifer_Depth_Min_m,Aquifer_Depth_Max_m,Aquifer_Thickness_m,Remarks,Soil_Type,Infiltration_Rate_mm_per_hr,Soil_Permability_Class,Roof_Type,Runoff_Coefficient,Water_Quality
+Visakhapatnam,Andhra Pradesh,17.68,83.21,1451,7.2,Confined,15,21,6,"Moderate recharge, urban extraction high",Sandy,19,High,Metal,0.75,Good
+Vijayawada,Andhra Pradesh,16.52,80.63,1030,14.9,Confined,12,18,6,"Moderate recharge, urban extraction high",Sandy,20,High,Concrete,0.85,Moderate
+Guntur,Andhra Pradesh,16.31,80.43,1401,11.0,Unconfined,14,33,19,"Moderate recharge, urban extraction high",Loamy,19,High,Metal,0.75,Good
+Itanagar,Arunachal Pradesh,27.1,93.62,910,16.2,Confined,17,27,10,"Moderate recharge, urban extraction high",Loamy,18,High,Concrete,0.85,Moderate
+Pasighat,Arunachal Pradesh,28.07,95.33,1117,13.6,Unconfined,7,26,19,"Moderate recharge, urban extraction high",Clayey,17,Medium,Tiled,0.7,Moderate
+Tawang,Arunachal Pradesh,27.58,91.86,1108,21.1,Unconfined,9,28,19,"Moderate recharge, urban extraction high",Clayey,12,Medium,Concrete,0.85,Good
+Guwahati,Assam,26.15,91.74,763,22.8,Confined,13,23,10,"Moderate recharge, urban extraction high",Sandy,18,High,Concrete,0.85,Good
+Silchar,Assam,24.82,92.78,1112,21.6,Unconfined,12,26,14,"Moderate recharge, urban extraction high",Sandy,16,Medium,Metal,0.75,Moderate
+Dibrugarh,Assam,27.48,94.91,921,17.7,Unconfined,13,32,19,"Moderate recharge, urban extraction high",Loamy,14,Medium,Concrete,0.85,Moderate
+Patna,Bihar,25.61,85.14,876,24.4,Confined,18,30,12,"Moderate recharge, urban extraction high",Clayey,13,Medium,Concrete,0.85,Good
+Gaya,Bihar,24.79,85.0,1097,11.2,Confined,14,28,14,"Moderate recharge, urban extraction high",Clayey,12,Medium,Metal,0.75,Good
+Bhagalpur,Bihar,25.24,87.0,794,11.5,Confined,16,29,13,"Moderate recharge, urban extraction high",Sandy,15,Medium,Concrete,0.85,Moderate
+Raipur,Chhattisgarh,21.23,81.63,988,10.9,Unconfined,5,20,15,"Moderate recharge, urban extraction high",Loamy,16,Medium,Metal,0.75,Good
+Bilaspur,Chhattisgarh,22.08,82.15,854,21.7,Unconfined,9,28,19,"Moderate recharge, urban extraction high",Sandy,14,Medium,Tiled,0.7,Moderate
+Durg,Chhattisgarh,21.19,81.29,786,21.6,Unconfined,5,16,11,"Moderate recharge, urban extraction high",Clayey,11,Low,Tiled,0.7,Moderate
+Panaji,Goa,15.49,73.83,551,23.4,Confined,14,26,12,"Semi-arid region, overexploited groundwater",Loamy,14,Medium,Concrete,0.85,Moderate
+Margao,Goa,15.3,73.95,529,25.0,Confined,16,28,12,"Semi-arid region, overexploited groundwater",Clayey,15,Medium,Tiled,0.7,Poor
+Vasco da Gama,Goa,15.4,73.83,845,28.6,Confined,18,27,9,"Semi-arid region, overexploited groundwater",Sandy,9,Low,Metal,0.75,Poor
+Ahmedabad,Gujarat,23.02,72.57,1120,10.3,Confined,17,22,5,"Moderate recharge, urban extraction high",Clayey,11,Low,Metal,0.75,Moderate
+Surat,Gujarat,21.17,72.83,775,21.6,Unconfined,10,20,10,"Moderate recharge, urban extraction high",Loamy,13,Medium,Tiled,0.7,Good
+Vadodara,Gujarat,22.3,73.2,880,14.2,Confined,20,35,15,"Moderate recharge, urban extraction high",Sandy,13,Medium,Metal,0.75,Good
+Gurgaon,Haryana,28.45,77.02,732,14.5,Confined,13,24,11,"Moderate recharge, urban extraction high",Sandy,13,Medium,Concrete,0.85,Good
+Faridabad,Haryana,28.41,77.31,725,18.9,Unconfined,11,31,20,"Moderate recharge, urban extraction high",Sandy,10,Low,Tiled,0.7,Moderate
+Panipat,Haryana,29.39,76.97,710,13.4,Unconfined,13,28,15,"Moderate recharge, urban extraction high",Sandy,10,Low,Metal,0.75,Moderate
+Shimla,Himachal Pradesh,31.1,77.17,966,14.8,Confined,13,28,15,"Moderate recharge, urban extraction high",Loamy,15,Medium,Concrete,0.85,Moderate
+Mandi,Himachal Pradesh,31.72,76.92,976,19.1,Unconfined,11,25,14,"Moderate recharge, urban extraction high",Loamy,13,Medium,Tiled,0.7,Good
+Dharamshala,Himachal Pradesh,32.22,76.32,841,24.3,Confined,17,23,6,"Moderate recharge, urban extraction high",Loamy,15,Medium,Concrete,0.85,Moderate
+Ranchi,Jharkhand,23.34,85.33,776,23.5,Confined,20,30,10,"Moderate recharge, urban extraction high",Loamy,18,High,Metal,0.75,Moderate
+Jamshedpur,Jharkhand,22.8,86.19,831,16.0,Unconfined,13,28,15,"Moderate recharge, urban extraction high",Clayey,18,High,Tiled,0.7,Moderate
+Dhanbad,Jharkhand,23.8,86.43,858,23.1,Confined,16,29,13,"Moderate recharge, urban extraction high",Sandy,16,Medium,Tiled,0.7,Moderate
+Bengaluru,Karnataka,12.97,77.59,1524,7.9,Unconfined,8,26,18,"Moderate recharge, urban extraction high",Alluvial,23,High,Concrete,0.85,Good
+Mysuru,Karnataka,12.3,76.65,757,22.3,Unconfined,7,22,15,"Semi-arid region, overexploited groundwater",Sandy,13,Medium,Metal,0.75,Moderate
+Mangalore,Karnataka,12.87,74.88,728,15.8,Unconfined,11,24,13,"Semi-arid region, overexploited groundwater",Clayey,10,Low,Concrete,0.85,Poor
+Thiruvananthapuram,Kerala,8.48,76.95,688,19.9,Confined,19,31,12,"Semi-arid region, overexploited groundwater",Clayey,9,Low,Concrete,0.85,Poor
+Kochi,Kerala,9.93,76.27,802,20.4,Confined,11,17,6,"Semi-arid region, overexploited groundwater",Clayey,13,Medium,Metal,0.75,Poor
+Kozhikode,Kerala,11.26,75.78,740,26.7,Unconfined,11,30,19,"Semi-arid region, overexploited groundwater",Clayey,12,Medium,Concrete,0.85,Moderate
+Indore,Madhya Pradesh,22.72,75.85,963,24.1,Unconfined,7,25,18,"Moderate recharge, urban extraction high",Loamy,13,Medium,Metal,0.75,Good
+Bhopal,Madhya Pradesh,23.25,77.41,746,12.4,Unconfined,10,22,12,"Moderate recharge, urban extraction high",Loamy,16,Medium,Concrete,0.85,Moderate
+Gwalior,Madhya Pradesh,26.23,78.17,1050,23.2,Unconfined,14,29,15,"Moderate recharge, urban extraction high",Sandy,11,Low,Concrete,0.85,Moderate
+Mumbai,Maharashtra,19.07,72.87,864,29.0,Unconfined,15,33,18,"Semi-arid region, overexploited groundwater",Clayey,8,Low,Tiled,0.7,Moderate
+Pune,Maharashtra,18.52,73.85,854,23.1,Confined,15,26,11,"Semi-arid region, overexploited groundwater",Clayey,9,Low,Metal,0.75,Poor
+Nagpur,Maharashtra,21.15,79.08,1174,22.0,Confined,18,33,15,"Moderate recharge, urban extraction high",Clayey,18,High,Tiled,0.7,Moderate
+Imphal,Manipur,24.82,93.95,948,15.6,Unconfined,6,25,19,"Moderate recharge, urban extraction high",Sandy,11,Low,Concrete,0.85,Moderate
+Thoubal,Manipur,24.48,94.28,952,17.1,Confined,10,17,7,"Moderate recharge, urban extraction high",Clayey,16,Medium,Tiled,0.7,Good
+Churachandpur,Manipur,24.33,93.68,990,14.6,Unconfined,10,22,12,"Moderate recharge, urban extraction high",Sandy,10,Low,Metal,0.75,Moderate
+Shillong,Meghalaya,25.57,91.88,1063,23.4,Unconfined,9,29,20,"Moderate recharge, urban extraction high",Loamy,12,Medium,Metal,0.75,Moderate
+Tura,Meghalaya,25.51,90.22,931,16.1,Confined,12,25,13,"Moderate recharge, urban extraction high",Loamy,16,Medium,Tiled,0.7,Good
+Nongstoin,Meghalaya,25.47,91.57,1000,23.0,Unconfined,11,23,12,"Moderate recharge, urban extraction high",Clayey,10,Low,Metal,0.75,Good
+Aizawl,Mizoram,23.73,92.72,749,25.0,Unconfined,6,20,14,"Moderate recharge, urban extraction high",Sandy,13,Medium,Tiled,0.7,Moderate
+Lunglei,Mizoram,22.9,92.77,834,12.0,Confined,17,27,10,"Moderate recharge, urban extraction high",Sandy,12,Medium,Concrete,0.85,Moderate
+Saiha,Mizoram,22.47,92.97,762,12.0,Unconfined,12,32,20,"Moderate recharge, urban extraction high",Loamy,16,Medium,Tiled,0.7,Moderate
+Kohima,Nagaland,25.67,94.11,1132,20.6,Confined,15,26,11,"Moderate recharge, urban extraction high",Loamy,18,High,Tiled,0.7,Moderate
+Dimapur,Nagaland,25.9,93.73,890,23.7,Unconfined,7,27,20,"Moderate recharge, urban extraction high",Sandy,14,Medium,Concrete,0.85,Moderate
+Mokokchung,Nagaland,26.33,94.53,798,20.2,Unconfined,12,30,18,"Moderate recharge, urban extraction high",Loamy,17,Medium,Tiled,0.7,Good
+Bhubaneswar,Odisha,20.27,85.84,848,19.6,Unconfined,10,24,14,"Moderate recharge, urban extraction high",Loamy,16,Medium,Concrete,0.85,Moderate
+Cuttack,Odisha,20.46,85.88,832,14.9,Confined,19,29,10,"Moderate recharge, urban extraction high",Sandy,14,Medium,Metal,0.75,Good
+Rourkela,Odisha,22.22,84.85,1180,14.9,Unconfined,5,15,10,"Moderate recharge, urban extraction high",Sandy,16,Medium,Concrete,0.85,Good
+Ludhiana,Punjab,30.9,75.85,1028,18.1,Confined,11,23,12,"Moderate recharge, urban extraction high",Sandy,12,Medium,Tiled,0.7,Moderate
+Amritsar,Punjab,31.63,74.87,1008,13.3,Confined,10,16,6,"Moderate recharge, urban extraction high",Loamy,18,High,Concrete,0.85,Good
+Jalandhar,Punjab,31.33,75.58,1154,21.4,Unconfined,12,30,18,"Moderate recharge, urban extraction high",Clayey,10,Low,Tiled,0.7,Moderate
+Jaipur,Rajasthan,26.92,75.82,913,12.9,Unconfined,5,17,12,"Moderate recharge, urban extraction high",Sandy,11,Low,Tiled,0.7,Moderate
+Jodhpur,Rajasthan,26.27,73.02,1056,14.1,Confined,18,27,9,"Moderate recharge, urban extraction high",Clayey,14,Medium,Tiled,0.7,Moderate
+Udaipur,Rajasthan,23.49,91.5,920,13.4,Confined,10,19,9,"Moderate recharge, urban extraction high",Sandy,16,Medium,Tiled,0.7,Moderate
+Gangtok,Sikkim,27.33,88.61,955,17.7,Unconfined,10,20,10,"Moderate recharge, urban extraction high",Loamy,14,Medium,Tiled,0.7,Good
+Namchi,Sikkim,27.17,88.34,910,19.2,Confined,17,26,9,"Moderate recharge, urban extraction high",Loamy,15,Medium,Metal,0.75,Moderate
+Gyalshing,Sikkim,27.21,88.39,1044,23.3,Confined,19,30,11,"Moderate recharge, urban extraction high",Sandy,11,Low,Concrete,0.85,Good
+Chennai,Tamil Nadu,13.08,80.27,1348,12.8,Confined,15,21,6,"Moderate recharge, urban extraction high",Alluvial,16,Medium,Tiled,0.7,Moderate
+Coimbatore,Tamil Nadu,11.02,76.97,699,28.0,Confined,16,26,10,"Semi-arid region, overexploited groundwater",Loamy,8,Low,Tiled,0.7,Poor
+Madurai,Tamil Nadu,9.93,78.12,1529,14.0,Confined,18,26,8,"Moderate recharge, urban extraction high",Alluvial,20,High,Concrete,0.85,Good
+Hyderabad,Telangana,17.38,78.48,1475,11.4,Confined,18,33,15,"Moderate recharge, urban extraction high",Alluvial,21,High,Metal,0.75,Moderate
+Warangal,Telangana,17.97,79.6,1175,13.9,Confined,11,23,12,"Moderate recharge, urban extraction high",Sandy,17,Medium,Metal,0.75,Good
+Nizamabad,Telangana,18.67,78.1,1281,8.9,Confined,19,28,9,"Moderate recharge, urban extraction high",Alluvial,16,Medium,Tiled,0.7,Moderate
+Agartala,Tripura,23.83,91.28,1040,19.3,Confined,14,26,12,"Moderate recharge, urban extraction high",Sandy,13,Medium,Concrete,0.85,Good
+Udaipur,Tripura,23.49,91.5,1087,24.1,Confined,10,17,7,"Moderate recharge, urban extraction high",Sandy,17,Medium,Concrete,0.85,Moderate
+Dharmanagar,Tripura,24.56,92.01,921,10.6,Confined,14,23,9,"Moderate recharge, urban extraction high",Clayey,12,Medium,Concrete,0.85,Good
+Lucknow,Uttar Pradesh,26.85,80.95,1031,20.6,Confined,11,22,11,"Moderate recharge, urban extraction high",Loamy,18,High,Concrete,0.85,Good
+Kanpur,Uttar Pradesh,26.45,80.33,782,19.9,Unconfined,15,25,10,"Moderate recharge, urban extraction high",Sandy,14,Medium,Metal,0.75,Moderate
+Ghaziabad,Uttar Pradesh,28.67,77.43,819,11.5,Unconfined,12,27,15,"Moderate recharge, urban extraction high",Clayey,15,Medium,Tiled,0.7,Good
+Dehradun,Uttarakhand,30.33,78.03,926,17.0,Confined,16,25,9,"Moderate recharge, urban extraction high",Loamy,14,Medium,Metal,0.75,Good
+Haridwar,Uttarakhand,29.95,78.16,967,16.7,Confined,18,25,7,"Moderate recharge, urban extraction high",Sandy,10,Low,Metal,0.75,Moderate
+Roorkee,Uttarakhand,29.87,77.88,872,24.7,Confined,12,26,14,"Moderate recharge, urban extraction high",Loamy,14,Medium,Tiled,0.7,Moderate
+Kolkata,West Bengal,22.57,88.36,1128,11.2,Unconfined,9,28,19,"Moderate recharge, urban extraction high",Clayey,10,Low,Tiled,0.7,Moderate
+Howrah,West Bengal,22.59,88.31,956,24.0,Unconfined,9,24,15,"Moderate recharge, urban extraction high",Clayey,17,Medium,Tiled,0.7,Moderate
+Durgapur,West Bengal,23.52,87.32,1066,24.4,Confined,12,20,8,"Moderate recharge, urban extraction high",Sandy,16,Medium,Tiled,0.7,Good

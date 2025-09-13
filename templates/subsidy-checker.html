@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RWH Subsidy & Compliance Checker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+        .glass-input, select {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+        .glass-input:focus, select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(34, 211, 238, 0.5);
+            outline: none;
+        }
+        .glass-button {
+            background: rgba(34, 211, 238, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+        .glass-button:hover {
+            background: rgba(34, 211, 238, 0.3);
+        }
+        .hidden { display: none; }
+        .result-box {
+            padding: 1.5rem;
+            margin-top: 20px;
+            border-radius: 12px;
+            border-left: 5px solid;
+        }
+        .result-box.green { background-color: rgba(16, 185, 129, 0.1); border-color: #10b981; }
+        .result-box.yellow { background-color: rgba(245, 158, 11, 0.1); border-color: #f59e0b; }
+        .result-box.red { background-color: rgba(239, 68, 68, 0.1); border-color: #ef4444; }
+        .compliance-status { font-weight: bold; font-size: 1.2em; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; color: rgba(255, 255, 255, 0.8); }
+        .radio-group label, .checkbox-group label { display: inline-block; margin-left: 0.5rem; margin-right: 1.5rem; }
+        /* Fix for dropdown option text color */
+        select option {
+            color: #000000; /* Set option text to black for readability on light backgrounds */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <div class="container mx-auto max-w-4xl">
+        <div class="text-center my-8">
+            <h1 class="text-4xl font-bold text-cyan-400">RWH Subsidy & Compliance Checker</h1>
+            <p class="text-gray-300 mt-2">Check your eligibility for rainwater harvesting subsidies and local regulations.</p>
+        </div>
+
+        <div class="glass-card">
+            <form id="eligibilityForm">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="state">State:</label>
+                        <select id="state" name="state" required class="w-full glass-input">
+                            <option value="">Select Your State</option>
+                            <!-- States will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="plotSize">Plot Size (in sq.m):</label>
+                        <input type="number" id="plotSize" name="plotSize" min="1" required class="glass-input w-full">
+                    </div>
+                    <div class="form-group">
+                        <label>Location:</label>
+                        <div class="radio-group mt-2">
+                            <input type="radio" id="urban" name="location" value="urban" required>
+                            <label for="urban">Urban</label>
+                            <input type="radio" id="rural" name="location" value="rural">
+                            <label for="rural">Rural</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Building Type:</label>
+                        <div class="radio-group mt-2">
+                            <input type="radio" id="residential" name="buildingType" value="residential" required>
+                            <label for="residential">Residential</label>
+                            <input type="radio" id="commercial" name="buildingType" value="commercial">
+                            <label for="commercial">Commercial</label>
+                            <input type="radio" id="government" name="buildingType" value="government">
+                            <label for="government">Government</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <button type="submit" class="glass-button">Check Eligibility</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="resultsSection" class="hidden mt-8">
+            <h2 class="text-3xl font-bold text-cyan-400 text-center mb-6">Your Results</h2>
+
+            <div id="complianceStatus" class="result-box"></div>
+
+            <div id="subsidySchemes" class="result-box green">
+                <h3 class="text-xl font-semibold mb-2">Eligible Subsidy Schemes:</h3>
+                <ul id="schemesList" class="list-disc pl-5 space-y-2"></ul>
+            </div>
+
+            <div id="nextSteps" class="result-box yellow">
+                <h3 class="text-xl font-semibold mb-2">📝 Next Steps:</h3>
+                <p>Contact your local municipal office to confirm specific local-level incentives or rebates on property tax.</p>
+                <p>Visit the official Jal Shakti Abhiyan website for more information on the nationwide campaign.</p>
+            </div>
+
+            <div id="warningMessage" class="result-box red hidden">
+                <h3 class="text-xl font-semibold mb-2">⚠️ Important Warning:</h3>
+                <p>Non-compliance with mandatory rainwater harvesting regulations may result in penalties, including fines. Make sure your building plans include a rainwater harvesting system to avoid issues during the inspection process.</p>
+            </div>
+        </div>
+        <div class="text-center mt-8">
+            <a href="{{ url_for('index_page') }}" class="glass-button"><i class="fas fa-arrow-left mr-2"></i>Back to Home</a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/subsidy-checker.js') }}"></script>
+</body>
+</html>

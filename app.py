@@ -489,68 +489,156 @@ def download_report(entry_id):
 
     analysis = calculate_comprehensive_feasibility(location_data, user_data)
 
-    # --- PDF Generation with FPDF2 (No external dependencies) - Updated Syntax ---
+    # --- PDF Generation with FPDF2 - Now with Unicode font support ---
     class PDF(FPDF):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # Add a Unicode font (DejaVu is included with fpdf2)
+            # Provide the full path to the font file
+            self.add_font('DejaVu', '', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')
+            self.add_font('DejaVu', 'B', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf')
+            self.set_font('DejaVu', '', 12)
+
         def header(self):
-            self.set_font('Helvetica', 'B', 12)
+            self.set_font('DejaVu', 'B', 12)
             self.cell(0, 10, 'Rooftop Rainwater Harvesting Report', new_x=XPos.LMARGIN, new_y=YPos.NEXT, align='C')
             self.ln(5)
 
         def footer(self):
             self.set_y(-15)
-            self.set_font('Helvetica', 'I', 8)
+            self.set_font('DejaVu', '', 8)
             self.cell(0, 10, f'Page {self.page_no()}', align='C')
 
         def section_title(self, title):
-            self.set_font('Helvetica', 'B', 14)
+            self.set_font('DejaVu', 'B', 14)
             self.set_text_color(0, 77, 76)
             self.cell(0, 10, title, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align='L')
             self.line(self.get_x(), self.get_y(), self.get_x() + 190, self.get_y())
             self.ln(4)
         
         def write_key_value_table(self, data):
-            self.set_font('Helvetica', '', 11)
+            self.set_font('DejaVu', '', 11)
             self.set_text_color(51, 51, 51)
-            key_col_width = 50
+            key_col_width = 65
             val_col_width = self.w - self.l_margin - self.r_margin - key_col_width
             line_height = self.font_size * 1.5
             for key, value in data.items():
-                self.set_font('Helvetica', 'B')
+                self.set_font('DejaVu', 'B')
                 self.cell(key_col_width, line_height, key, border=0)
-                self.set_font('Helvetica', '')
+                self.set_font('DejaVu', '')
                 self.multi_cell(val_col_width, line_height, str(value), border=0, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            self.ln(5)
+
+        def write_list(self, items):
+            self.set_font('DejaVu', '', 11)
+            self.set_text_color(51, 51, 51)
+            for item in items:
+                self.multi_cell(0, 5, f'- {item}')
+                self.ln(2)
             self.ln(5)
 
     pdf = PDF()
     pdf.add_page()
-    pdf.set_font('Times', 'B', 24)
+    pdf.set_font('DejaVu', 'B', 24)
     pdf.set_text_color(0, 77, 76)
     pdf.cell(0, 10, 'Rooftop Rainwater Harvesting Report', new_x=XPos.LMARGIN, new_y=YPos.NEXT, align='C')
-    pdf.set_font('Times', '', 11)
+    pdf.set_font('DejaVu', '', 11)
     pdf.set_text_color(51, 51, 51)
     pdf.cell(0, 10, f'Report generated on: {datetime.now().strftime("%d %B %Y")}', new_x=XPos.LMARGIN, new_y=YPos.NEXT, align='C')
     pdf.ln(10)
 
-    pdf.section_title('User Details')
+    pdf.section_title('1. Your Property Details')
     pdf.write_key_value_table({
-        "Name": user_data.name, "Location": user_data.location_name,
-        "Rooftop Area": f"{user_data.rooftop_area:.1f} m²", "Open Space Area": f"{user_data.open_space_area:.1f} m²",
-        "Household Size": f"{user_data.household_size} people", "Property Type": user_data.property_type
+        "Property Owner": user_data.name,
+        "Location": user_data.location_name,
+        "Property Type": user_data.property_type,
+        "Household Size": f"{user_data.household_size} People",
+        "Rooftop Area": f"{user_data.rooftop_area:.1f} m²",
+        "Open Space Area": f"{user_data.open_space_area:.1f} m²",
     })
 
-    pdf.section_title('Feasibility Assessment')
+    pdf.section_title('2. Location Analysis')
     pdf.write_key_value_table({
-        "Harvest Potential": f"{analysis['runoff_data']['annual_liters']:,.0f} Liters/year",
-        "Household Demand": f"{analysis['annual_demand']:,.0f} Liters/year",
-        "Feasibility Status": f"{analysis['feasibility_status']} ({analysis['feasibility_percentage']}% of demand met)"
+        "Data Source": f"Analysis based on data for {location_data['Region_Name']}",
+        "Annual Rainfall": f"{location_data['Rainfall_mm']:.0f} mm",
+        "Soil Type": location_data['Soil_Type'],
+        "Groundwater Depth": f"{location_data['Groundwater_Depth_m']} meters",
+        "Distance to Data Point": f"{location_data['distance']:.1f} km",
     })
 
-    # The .output(dest='S') method returns a string; encode to bytes for Flask response.
-    pdf_bytes = bytes(pdf.output(dest='S'))
-    return pdf_bytes, 200, {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': f'attachment; filename=RWH_Report_{user_data.name.replace(" ", "_")}.pdf'
-    }
+    pdf.section_title('3. Hydrogeological Profile')
+    pdf.write_key_value_table({
+        "Aquifer Type": location_data['Aquifer_Type'],
+        "Aquifer Depth": f"{location_data['Aquifer_Depth_Min_m']} - {location_data['Aquifer_Depth_Max_m']} meters",
+        "Infiltration Rate": f"{location_data['Infiltration_Rate_mm_per_hr']} mm/hr",
+        "Water Quality": location_data['Water_Quality'],
+        "Remarks": location_data['Remarks'],
+    })
+
+    pdf.section_title('4. Feasibility Assessment')
+    pdf.write_key_value_table({
+        "Annual Harvest Potential": f"{analysis['runoff_data']['annual_liters']:,.0f} Liters",
+        "Household Water Demand": f"{analysis['annual_demand']:,.0f} Liters",
+        "Demand Coverage": f"{analysis['feasibility_percentage']}%",
+        "Feasibility Status": analysis['feasibility_status'],
+    })
+
+    pdf.section_title('5. Personalized Recommendations')
+    pdf.write_key_value_table({
+        "Category": f"Category {analysis['category']['category']}: {analysis['category']['name']}",
+        "Description": analysis['category']['description'],
+    })
+    pdf.set_font('DejaVu', 'B', 11)
+    pdf.cell(0, 10, "Recommended Structures:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.write_list(analysis['category']['recommended_structures'])
+
+    pdf.section_title('6. Safety Assessment for Groundwater Recharge')
+    safety_status = "Safe" if analysis['safety_check']['is_safe'] else "Caution Advised"
+    pdf.write_key_value_table({"Status": safety_status})
+    if not analysis['safety_check']['is_safe']:
+        pdf.set_font('DejaVu', 'B', 11)
+        pdf.cell(0, 10, "Potential Issues:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.write_list(analysis['safety_check']['safety_issues'])
+        pdf.set_font('DejaVu', 'B', 11)
+        pdf.cell(0, 10, "Alternatives:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.write_list(analysis['safety_check']['alternatives'])
+
+    pdf.section_title('7. Recommended Dimensions & Costs')
+    pdf.write_key_value_table({
+        "Storage Tank Capacity": f"{analysis['structure_dimensions']['storage']['capacity_liters']:,.0f} Liters",
+        "Storage Tank Est. Cost": analysis['structure_dimensions']['storage']['material_cost'].replace('₹', 'Rs. '),
+    })
+    if 'pit' in analysis['structure_dimensions']:
+        pit = analysis['structure_dimensions']['pit']
+        pdf.write_key_value_table({
+            "Recharge Pit Dimensions": f"{pit['length_m']}m x {pit['width_m']}m x {pit['depth_m']}m",
+            "Recharge Pit Est. Cost": pit['material_cost'].replace('₹', 'Rs. '),
+        })
+
+    pdf.section_title('8. Water Purification Plan')
+    pdf.write_key_value_table({
+        "Intended Use": user_data.intended_use,
+        "Maintenance Schedule": analysis['purification']['maintenance_schedule'],
+        "Est. Treatment System Cost": analysis['purification']['estimated_cost'].replace('₹', 'Rs. '),
+    })
+    pdf.set_font('DejaVu', 'B', 11)
+    pdf.cell(0, 10, "Recommended Treatment Sequence:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.write_list(analysis['purification']['treatment_sequence'])
+
+    pdf.section_title('9. Financial Analysis')
+    pdf.write_key_value_table({
+        "Initial Investment": f"Rs. {analysis['cost_analysis']['total_construction_cost']:,.0f}",
+        "Annual Savings": f"Rs. {analysis['cost_analysis']['annual_net_savings']:,.0f}",
+        "Payback Period": f"{analysis['cost_analysis']['payback_years']} years",
+        "ROI (20 years)": f"{analysis['cost_analysis']['roi_percentage']}%",
+    })
+
+    # The .output() method returns a bytearray, which we convert to bytes
+    pdf_bytes = bytes(pdf.output())
+    response = make_response(pdf_bytes)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=RWH_Report_{user_data.name.replace(" ", "_")}.pdf'
+    return response
 
 @app.route('/api/calculate', methods=['POST'])
 def api_calculate():

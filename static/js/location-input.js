@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize MapLibre GL JS
   try {
     // IMPORTANT: Replace with your own free API key from https://www.maptiler.com/
-    const MAPTILER_API_KEY = 'pRYii1ILboCHuSTYI4rY';
+    const MAPTILER_API_KEY = 'mUiASIDIGsImfNM8L0hq';
 
     const streetsStyle = `https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_API_KEY}`;
     const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${MAPTILER_API_KEY}`;
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('coords').textContent = `Latitude: ${lat}, Longitude: ${lng}`;
     
     try {
-      const MAPTILER_API_KEY = 'pRYii1ILboCHuSTYI4rY';
+      const MAPTILER_API_KEY = 'mUiASIDIGsImfNM8L0hq';
       const response = await fetch(`https://api.maptiler.com/geocoding/${lng},${lat}.json?key=${MAPTILER_API_KEY}`);
       const data = await response.json();
       if (data.features && data.features.length > 0) {
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const MAPTILER_API_KEY = 'pRYii1ILboCHuSTYI4rY';
+      const MAPTILER_API_KEY = 'mUiASIDIGsImfNM8L0hq';
       const response = await fetch(`https://api.maptiler.com/geocoding/${encodeURIComponent(input)}.json?key=${MAPTILER_API_KEY}&country=IN&types=address,street,place,postcode,region,district&limit=5`);
       const data = await response.json();
 
@@ -399,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // This method avoids browser quirks with fetch/redirects in cross-origin scenarios.
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = 'http://localhost:5000/submit_form';
+    form.action = '/submit_form';
     form.style.display = 'none'; // The form is not visible to the user
 
     const dataToSubmit = {

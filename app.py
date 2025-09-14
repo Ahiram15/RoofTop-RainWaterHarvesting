@@ -65,6 +65,33 @@ class AdminUser(UserMixin, db.Model):
     role = db.Column(db.String(50), default='admin')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
+
+    def set_password(self, password):
+        """Hash and set the password"""
+        password_bytes = password.encode('utf-8')
+        self.password_hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode('utf-8')
+    
+    def check_password(self, password):
+        """Check if the provided password matches the hash"""
+        password_bytes = password.encode('utf-8')
+        return bcrypt.checkpw(password_bytes, self.password_hash.encode('utf-8'))
+
+# --- Regular User Model ---
+class RegularUser(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_login = db.Column(db.DateTime)
+
+    def set_password(self, password):
+        password_bytes = password.encode('utf-8')
+        self.password_hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode('utf-8')
+
+    def check_password(self, password):
+        password_bytes = password.encode('utf-8')
+        return bcrypt.checkpw(password_bytes, self.password_hash.encode('utf-8'))
     
     def set_password(self, password):
         """Hash and set the password"""
@@ -79,7 +106,11 @@ class AdminUser(UserMixin, db.Model):
 # Flask-Login user loader
 @login_manager.user_loader
 def load_user(user_id):
-    return AdminUser.query.get(int(user_id))
+    # Try admin first, then regular user
+    user = AdminUser.query.get(int(user_id))
+    if user:
+        return user
+    return RegularUser.query.get(int(user_id))
 
 # Admin required decorator
 def admin_required(f):
@@ -429,6 +460,32 @@ def calculate_comprehensive_feasibility(location_data, user_input):
 def index_page():
     """Serves the main index.html page."""
     return render_template('index.html')
+
+
+# --- User Login Route ---
+@app.route('/user/login', methods=['GET', 'POST'])
+def user_login():
+    if current_user.is_authenticated and not hasattr(current_user, 'role'):
+        return redirect(url_for('location_input_page'))
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if not username or not password:
+            flash('Please enter both username and password.', 'error')
+            return render_template('user_login.html')
+
+        user = RegularUser.query.filter_by(username=username).first()
+        if user and user.check_password(password):
+            login_user(user)
+            user.last_login = datetime.utcnow()
+            db.session.commit()
+            return redirect(url_for('location_input_page'))
+        else:
+            flash('Invalid username or password.', 'error')
+
+    return render_template('user_login.html')
 
 @app.route('/location-input')
 def location_input_page():

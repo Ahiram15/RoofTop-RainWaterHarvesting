@@ -243,8 +243,11 @@
   
   <!-- Header -->
   <header class="relative z-10 container mx-auto px-4 py-6 flex justify-between items-center">
-    <img src="https://via.placeholder.com/180x60/22d3ee/ffffff?text=RTRWH+Logo" alt="Rooftop Rainwater Harvesting Logo" class="h-12 transition-transform duration-300 hover:scale-105">
-    
+    <div class="w-full relative">
+      <div class="absolute left-1/2 transform -translate-x-1/2 text-center pointer-events-none">
+        <div class="text-white font-extrabold text-3xl md:text-5xl tracking-wide drop-shadow-2xl">HYDRO HARVEST</div>
+      </div>
+    </div>
     <div class="flex items-center space-x-4">
       <!-- Progress indicator -->
       <div class="progress-indicator px-4 py-2 flex items-center space-x-2">
@@ -365,6 +368,9 @@
               <a href="#" class="text-primary hover:underline">Terms of Service</a> and 
               <a href="#" class="text-primary hover:underline">Privacy Policy</a>
             </div>
+            <div class="mt-4">
+              <a href="{{ url_for('admin_login') }}" class="glass-button w-full py-3 px-4 rounded-xl text-white font-medium text-center">Login as Admin</a>
+            </div>
           </div>
         </div>
       </div>
@@ -472,4 +478,5 @@
 
   <script src="{{ url_for('static', filename='js/index.js') }}" defer></script>
 </body>
-</html>
+  <!-- ...existing code... -->
+  <!-- Removed duplicate login links -->

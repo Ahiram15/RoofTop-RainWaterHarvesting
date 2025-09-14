@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login - Rainwater Harvesting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-gray-100 flex items-center justify-center min-h-screen">
+    <div class="glass-card p-8 rounded-2xl shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">User Login</h2>
+        <form method="POST">
+            <div class="mb-4">
+                <label for="username" class="block mb-2">Username</label>
+                <input type="text" id="username" name="username" class="form-input w-full" required>
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block mb-2">Password</label>
+                <input type="password" id="password" name="password" class="form-input w-full" required>
+            </div>
+            <button type="submit" class="btn-primary w-full py-3 rounded-xl font-bold">Login</button>
+        </form>
+        <div class="mt-6 text-center text-xs text-muted">
+            By logging in, you agree to our 
+            <a href="#" class="text-primary hover:underline">Terms of Service</a> and 
+            <a href="#" class="text-primary hover:underline">Privacy Policy</a>
+        </div>
+    </div>
+</body>
+</html>

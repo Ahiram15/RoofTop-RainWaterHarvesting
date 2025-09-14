@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - RainWater Harvesting</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Enhanced gradient background */
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+      min-height: 100vh;
+    }
+    
+    /* Glass morphism effects */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+    }
+    
+    .glass-button {
+      background: rgba(34, 211, 238, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .glass-button:hover {
+      background: rgba(34, 211, 238, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(34, 211, 238, 0.2);
+    }
+    
+    .sidebar {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-item {
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      margin: 4px 0;
+    }
+    
+    .nav-item:hover, .nav-item.active {
+      background: rgba(34, 211, 238, 0.2);
+      color: #22d3ee;
+    }
+    
+    .stat-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    /* Text colors */
+    .text-primary { color: #22d3ee; }
+    .text-secondary { color: rgba(255, 255, 255, 0.8); }
+    .text-muted { color: rgba(255, 255, 255, 0.6); }
+    
+    /* Table styles */
+    .admin-table {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+    }
+    
+    .admin-table th {
+      background: rgba(34, 211, 238, 0.1);
+      color: #22d3ee;
+      font-weight: 600;
+    }
+    
+    .admin-table td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .admin-table tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar w-64 p-6">
+      <div class="mb-8">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-shield-alt text-2xl text-primary"></i>
+          <div>
+            <h1 class="text-lg font-bold text-white">Admin Panel</h1>
+            <p class="text-xs text-muted">RainWater Harvesting</p>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="space-y-2">
+        <a href="{{ url_for('admin_dashboard') }}" class="nav-item active flex items-center space-x-3 px-4 py-3 text-white">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        
+        <a href="{{ url_for('admin_users') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-users"></i>
+          <span>Users</span>
+        </a>
+        
+        <a href="{{ url_for('admin_analytics') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-chart-bar"></i>
+          <span>Analytics</span>
+        </a>
+        
+        <a href="{{ url_for('admin_export_users') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-download"></i>
+          <span>Export Data</span>
+        </a>
+        
+        <div class="border-t border-gray-600 my-4"></div>
+        
+        <a href="{{ url_for('index_page') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-home"></i>
+          <span>View Site</span>
+        </a>
+        
+        <a href="{{ url_for('admin_logout') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+      
+      <div class="mt-8 p-4 glass-card rounded-lg">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-primary bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-2">
+            <i class="fas fa-user text-primary"></i>
+          </div>
+          <p class="text-sm text-white font-medium">{{ current_user.username }}</p>
+          <p class="text-xs text-muted">{{ current_user.role.title() }}</p>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <!-- Header -->
+      <header class="mb-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-white mb-2">Dashboard Overview</h1>
+            <p class="text-muted">Welcome back, {{ current_user.username }}! Here's what's happening.</p>
+          </div>
+          <div class="text-muted text-sm">
+            <i class="fas fa-clock mr-2"></i>
+            Last login: {{ current_user.last_login.strftime('%B %d, %Y at %I:%M %p') if current_user.last_login else 'Never' }}
+          </div>
+        </div>
+      </header>
+      
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="stat-card rounded-xl p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-muted text-sm">Total Users</p>
+              <p class="text-2xl font-bold text-primary">{{ stats.total_users }}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-500 bg-opacity-20 rounded-full flex items-center justify-center">
+              <i class="fas fa-users text-blue-400"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="stat-card rounded-xl p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-muted text-sm">Recent Signups</p>
+              <p class="text-2xl font-bold text-primary">{{ stats.recent_signups }}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-500 bg-opacity-20 rounded-full flex items-center justify-center">
+              <i class="fas fa-user-plus text-green-400"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="stat-card rounded-xl p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-muted text-sm">Admin Users</p>
+              <p class="text-2xl font-bold text-primary">{{ stats.total_admins }}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-500 bg-opacity-20 rounded-full flex items-center justify-center">
+              <i class="fas fa-user-shield text-purple-400"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="stat-card rounded-xl p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-muted text-sm">Popular Locations</p>
+              <p class="text-2xl font-bold text-primary">{{ stats.popular_locations|length }}</p>
+            </div>
+            <div class="w-12 h-12 bg-orange-500 bg-opacity-20 rounded-full flex items-center justify-center">
+              <i class="fas fa-map-marker-alt text-orange-400"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Users -->
+        <div class="glass-card rounded-xl p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-white">Recent Users</h2>
+            <a href="{{ url_for('admin_users') }}" class="text-primary hover:text-white transition-colors text-sm">
+              View All <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+          
+          <div class="space-y-4">
+            {% for user in recent_users %}
+            <div class="flex items-center justify-between p-3 rounded-lg bg-white bg-opacity-5">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-primary bg-opacity-20 rounded-full flex items-center justify-center">
+                  <i class="fas fa-user text-primary text-xs"></i>
+                </div>
+                <div>
+                  <p class="text-white font-medium">{{ user.name }}</p>
+                  <p class="text-muted text-xs">{{ user.location_name }}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-muted">ID: {{ user.id }}</p>
+                <p class="text-xs text-primary">{{ user.rooftop_area }}m² roof</p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <!-- Popular Locations -->
+        <div class="glass-card rounded-xl p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-white">Popular Locations</h2>
+            <a href="{{ url_for('admin_analytics') }}" class="text-primary hover:text-white transition-colors text-sm">
+              View Analytics <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+          
+          <div class="space-y-4">
+            {% for location, count in stats.popular_locations %}
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-orange-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                  <i class="fas fa-map-marker-alt text-orange-400 text-xs"></i>
+                </div>
+                <span class="text-white">{{ location }}</span>
+              </div>
+              <span class="text-primary font-bold">{{ count }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Actions -->
+      <div class="mt-8">
+        <h2 class="text-xl font-bold text-white mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <a href="{{ url_for('admin_users') }}" class="glass-button p-4 rounded-xl text-center block">
+            <i class="fas fa-users text-2xl mb-2"></i>
+            <p class="text-white font-medium">Manage Users</p>
+          </a>
+          
+          <a href="{{ url_for('admin_analytics') }}" class="glass-button p-4 rounded-xl text-center block">
+            <i class="fas fa-chart-bar text-2xl mb-2"></i>
+            <p class="text-white font-medium">View Analytics</p>
+          </a>
+          
+          <a href="{{ url_for('admin_export_users') }}" class="glass-button p-4 rounded-xl text-center block">
+            <i class="fas fa-download text-2xl mb-2"></i>
+            <p class="text-white font-medium">Export Data</p>
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

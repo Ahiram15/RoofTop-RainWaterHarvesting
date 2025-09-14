@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users Management - Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Enhanced gradient background */
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+      min-height: 100vh;
+    }
+    
+    /* Glass morphism effects */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+    }
+    
+    .glass-button {
+      background: rgba(34, 211, 238, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .glass-button:hover {
+      background: rgba(34, 211, 238, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(34, 211, 238, 0.2);
+    }
+    
+    .glass-input {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .glass-input:focus {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(34, 211, 238, 0.5);
+      outline: none;
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+    }
+    
+    .glass-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .sidebar {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-item {
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      margin: 4px 0;
+    }
+    
+    .nav-item:hover, .nav-item.active {
+      background: rgba(34, 211, 238, 0.2);
+      color: #22d3ee;
+    }
+    
+    /* Text colors */
+    .text-primary { color: #22d3ee; }
+    .text-secondary { color: rgba(255, 255, 255, 0.8); }
+    .text-muted { color: rgba(255, 255, 255, 0.6); }
+    
+    /* Table styles */
+    .admin-table {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .admin-table th {
+      background: rgba(34, 211, 238, 0.1);
+      color: #22d3ee;
+      font-weight: 600;
+      padding: 16px;
+      text-align: left;
+    }
+    
+    .admin-table td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 16px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .admin-table tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .delete-btn {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    .pagination {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .pagination a, .pagination span {
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .pagination a {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .pagination a:hover {
+      background: rgba(34, 211, 238, 0.2);
+      color: #22d3ee;
+    }
+    
+    .pagination .current {
+      background: rgba(34, 211, 238, 0.3);
+      color: #22d3ee;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar w-64 p-6">
+      <div class="mb-8">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-shield-alt text-2xl text-primary"></i>
+          <div>
+            <h1 class="text-lg font-bold text-white">Admin Panel</h1>
+            <p class="text-xs text-muted">RainWater Harvesting</p>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="space-y-2">
+        <a href="{{ url_for('admin_dashboard') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        
+        <a href="{{ url_for('admin_users') }}" class="nav-item active flex items-center space-x-3 px-4 py-3 text-white">
+          <i class="fas fa-users"></i>
+          <span>Users</span>
+        </a>
+        
+        <a href="{{ url_for('admin_analytics') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-chart-bar"></i>
+          <span>Analytics</span>
+        </a>
+        
+        <a href="{{ url_for('admin_export_users') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-download"></i>
+          <span>Export Data</span>
+        </a>
+        
+        <div class="border-t border-gray-600 my-4"></div>
+        
+        <a href="{{ url_for('index_page') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-home"></i>
+          <span>View Site</span>
+        </a>
+        
+        <a href="{{ url_for('admin_logout') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <!-- Header -->
+      <header class="mb-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-white mb-2">User Management</h1>
+            <p class="text-muted">Manage all registered users and their assessments</p>
+          </div>
+          <div class="flex items-center space-x-4">
+            <span class="text-muted text-sm">Total Users: {{ users.total }}</span>
+            <a href="{{ url_for('admin_export_users') }}" class="glass-button px-4 py-2 rounded-lg text-white flex items-center space-x-2">
+              <i class="fas fa-download"></i>
+              <span>Export All</span>
+            </a>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Search and Filters -->
+      <div class="glass-card rounded-xl p-6 mb-6">
+        <form method="GET" class="flex items-center space-x-4">
+          <div class="flex-1">
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-muted"></i>
+              <input 
+                type="text" 
+                name="search" 
+                value="{{ search }}" 
+                placeholder="Search by name or location..." 
+                class="glass-input w-full pl-10 pr-4 py-3 rounded-xl"
+              >
+            </div>
+          </div>
+          <button type="submit" class="glass-button px-6 py-3 rounded-xl text-white">
+            <i class="fas fa-search mr-2"></i>Search
+          </button>
+          {% if search %}
+          <a href="{{ url_for('admin_users') }}" class="glass-button px-6 py-3 rounded-xl text-white">
+            <i class="fas fa-times mr-2"></i>Clear
+          </a>
+          {% endif %}
+        </form>
+      </div>
+      
+      <!-- Users Table -->
+      <div class="glass-card rounded-xl overflow-hidden">
+        <table class="admin-table w-full">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Property Details</th>
+              <th>Household Size</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users.items %}
+            <tr>
+              <td>
+                <span class="font-mono text-primary">#{{ user.id }}</span>
+              </td>
+              <td>
+                <div>
+                  <p class="font-medium text-white">{{ user.name }}</p>
+                  {% if user.user_lat and user.user_lon %}
+                  <p class="text-xs text-muted">{{ "%.4f"|format(user.user_lat) }}, {{ "%.4f"|format(user.user_lon) }}</p>
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                <div>
+                  <p class="text-white">{{ user.location_name }}</p>
+                  {% if user.property_type %}
+                  <p class="text-xs text-primary">{{ user.property_type }}</p>
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                <div class="text-sm">
+                  {% if user.rooftop_area %}
+                  <p class="text-white">Roof: {{ user.rooftop_area }}m²</p>
+                  {% endif %}
+                  {% if user.open_space_area %}
+                  <p class="text-muted">Open: {{ user.open_space_area }}m²</p>
+                  {% endif %}
+                  {% if user.roof_type %}
+                  <p class="text-primary text-xs">{{ user.roof_type }}</p>
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                <span class="text-white">{{ user.household_size or 'N/A' }}</span>
+              </td>
+              <td>
+                <div class="flex items-center space-x-2">
+                  <a href="{{ url_for('admin_user_detail', user_id=user.id) }}" 
+                     class="glass-button px-3 py-1 rounded text-white text-sm flex items-center space-x-1">
+                    <i class="fas fa-eye"></i>
+                    <span>View</span>
+                  </a>
+                  <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}" 
+                        class="inline" onsubmit="return confirmDelete('{{ user.name }}')">
+                    <button type="submit" 
+                            class="delete-btn px-3 py-1 rounded text-sm flex items-center space-x-1">
+                      <i class="fas fa-trash"></i>
+                      <span>Delete</span>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        
+        {% if not users.items %}
+        <div class="p-12 text-center">
+          <i class="fas fa-users text-4xl text-muted mb-4"></i>
+          <h3 class="text-lg font-medium text-white mb-2">No Users Found</h3>
+          <p class="text-muted">
+            {% if search %}
+              No users match your search criteria. <a href="{{ url_for('admin_users') }}" class="text-primary hover:underline">View all users</a>
+            {% else %}
+              No users have registered yet.
+            {% endif %}
+          </p>
+        </div>
+        {% endif %}
+      </div>
+      
+      <!-- Pagination -->
+      {% if users.pages > 1 %}
+      <div class="mt-6 flex justify-center">
+        <div class="pagination">
+          {% if users.has_prev %}
+            <a href="{{ url_for('admin_users', page=users.prev_num, search=search) }}">
+              <i class="fas fa-chevron-left"></i>
+            </a>
+          {% endif %}
+          
+          {% for page_num in users.iter_pages() %}
+            {% if page_num %}
+              {% if page_num != users.page %}
+                <a href="{{ url_for('admin_users', page=page_num, search=search) }}">{{ page_num }}</a>
+              {% else %}
+                <span class="current">{{ page_num }}</span>
+              {% endif %}
+            {% else %}
+              <span class="text-muted">...</span>
+            {% endif %}
+          {% endfor %}
+          
+          {% if users.has_next %}
+            <a href="{{ url_for('admin_users', page=users.next_num, search=search) }}">
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </main>
+  </div>
+  
+  <script>
+    function confirmDelete(userName) {
+      return confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Details - {{ user.name }} - Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Enhanced gradient background */
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+      min-height: 100vh;
+    }
+    
+    /* Glass morphism effects */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+    }
+    
+    .glass-button {
+      background: rgba(34, 211, 238, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .glass-button:hover {
+      background: rgba(34, 211, 238, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(34, 211, 238, 0.2);
+    }
+    
+    .sidebar {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-item {
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      margin: 4px 0;
+    }
+    
+    .nav-item:hover, .nav-item.active {
+      background: rgba(34, 211, 238, 0.2);
+      color: #22d3ee;
+    }
+    
+    /* Text colors */
+    .text-primary { color: #22d3ee; }
+    .text-secondary { color: rgba(255, 255, 255, 0.8); }
+    .text-muted { color: rgba(255, 255, 255, 0.6); }
+    
+    .info-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .delete-btn {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar w-64 p-6">
+      <div class="mb-8">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-shield-alt text-2xl text-primary"></i>
+          <div>
+            <h1 class="text-lg font-bold text-white">Admin Panel</h1>
+            <p class="text-xs text-muted">RainWater Harvesting</p>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="space-y-2">
+        <a href="{{ url_for('admin_dashboard') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        
+        <a href="{{ url_for('admin_users') }}" class="nav-item active flex items-center space-x-3 px-4 py-3 text-white">
+          <i class="fas fa-users"></i>
+          <span>Users</span>
+        </a>
+        
+        <a href="{{ url_for('admin_analytics') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-chart-bar"></i>
+          <span>Analytics</span>
+        </a>
+        
+        <a href="{{ url_for('admin_export_users') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-download"></i>
+          <span>Export Data</span>
+        </a>
+        
+        <div class="border-t border-gray-600 my-4"></div>
+        
+        <a href="{{ url_for('index_page') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-home"></i>
+          <span>View Site</span>
+        </a>
+        
+        <a href="{{ url_for('admin_logout') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <!-- Header -->
+      <header class="mb-8">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <a href="{{ url_for('admin_users') }}" class="glass-button px-4 py-2 rounded-lg text-white flex items-center space-x-2">
+              <i class="fas fa-arrow-left"></i>
+              <span>Back to Users</span>
+            </a>
+            <div>
+              <h1 class="text-3xl font-bold text-white">{{ user.name }}</h1>
+              <p class="text-muted">User ID: #{{ user.id }}</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3">
+            <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}" 
+                  class="inline" onsubmit="return confirmDelete()">
+              <button type="submit" class="delete-btn px-4 py-2 rounded-lg flex items-center space-x-2">
+                <i class="fas fa-trash"></i>
+                <span>Delete User</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </header>
+      
+      <!-- User Information Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Basic Information -->
+        <div class="glass-card rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+            <i class="fas fa-user text-primary mr-3"></i>
+            Basic Information
+          </h2>
+          
+          <div class="space-y-4">
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Full Name</span>
+                <span class="text-white font-medium">{{ user.name }}</span>
+              </div>
+            </div>
+            
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">User ID</span>
+                <span class="text-primary font-mono">#{{ user.id }}</span>
+              </div>
+            </div>
+            
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Household Size</span>
+                <span class="text-white font-medium">{{ user.household_size or 'Not specified' }}</span>
+              </div>
+            </div>
+            
+            {% if user.intended_use %}
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Intended Use</span>
+                <span class="text-primary font-medium">{{ user.intended_use.title() }}</span>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Location Information -->
+        <div class="glass-card rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+            <i class="fas fa-map-marker-alt text-primary mr-3"></i>
+            Location Details
+          </h2>
+          
+          <div class="space-y-4">
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Location Name</span>
+                <span class="text-white font-medium">{{ user.location_name }}</span>
+              </div>
+            </div>
+            
+            {% if user.user_lat and user.user_lon %}
+            <div class="info-card rounded-lg p-4">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-muted">Coordinates</span>
+                  <span class="text-primary text-sm">Precise Location</span>
+                </div>
+                <div class="text-white font-mono text-sm">
+                  <div>Lat: {{ "%.6f"|format(user.user_lat) }}</div>
+                  <div>Lng: {{ "%.6f"|format(user.user_lon) }}</div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Property Information -->
+        <div class="glass-card rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+            <i class="fas fa-home text-primary mr-3"></i>
+            Property Details
+          </h2>
+          
+          <div class="space-y-4">
+            {% if user.property_type %}
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Property Type</span>
+                <span class="text-white font-medium">{{ user.property_type }}</span>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if user.roof_type %}
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Roof Type</span>
+                <span class="text-white font-medium">{{ user.roof_type }}</span>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if user.rooftop_area %}
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Rooftop Area</span>
+                <span class="text-primary font-medium">{{ user.rooftop_area }} m²</span>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if user.open_space_area %}
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Open Space Area</span>
+                <span class="text-primary font-medium">{{ user.open_space_area }} m²</span>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Additional Information -->
+        <div class="glass-card rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+            <i class="fas fa-cog text-primary mr-3"></i>
+            Additional Details
+          </h2>
+          
+          <div class="space-y-4">
+            {% if user.existing_water_sources %}
+            <div class="info-card rounded-lg p-4">
+              <div>
+                <span class="text-muted block mb-2">Existing Water Sources</span>
+                <span class="text-white">{{ user.existing_water_sources }}</span>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if user.budget_preference %}
+            <div class="info-card rounded-lg p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Budget Preference</span>
+                <span class="text-primary font-medium">{{ user.budget_preference.title() }}</span>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Assessment Summary -->
+      <div class="mt-8">
+        <div class="glass-card rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+            <i class="fas fa-chart-line text-primary mr-3"></i>
+            Rainwater Harvesting Potential
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% if user.rooftop_area %}
+            <div class="info-card rounded-lg p-4 text-center">
+              <div class="text-2xl font-bold text-primary mb-2">
+                {{ (user.rooftop_area * 0.8 * 600)|round|int }}L
+              </div>
+              <div class="text-muted text-sm">Estimated Annual Collection</div>
+              <div class="text-xs text-secondary mt-1">(Based on 600mm rainfall)</div>
+            </div>
+            {% endif %}
+            
+            <div class="info-card rounded-lg p-4 text-center">
+              <div class="text-2xl font-bold text-primary mb-2">
+                {{ (user.household_size * 150) if user.household_size else 600 }}L
+              </div>
+              <div class="text-muted text-sm">Daily Water Requirement</div>
+              <div class="text-xs text-secondary mt-1">({{ user.household_size or 4 }} people × 150L)</div>
+            </div>
+            
+            {% if user.rooftop_area and user.household_size %}
+            <div class="info-card rounded-lg p-4 text-center">
+              <div class="text-2xl font-bold text-primary mb-2">
+                {{ ((user.rooftop_area * 0.8 * 600) / (user.household_size * 150 * 365) * 100)|round|int }}%
+              </div>
+              <div class="text-muted text-sm">Annual Demand Coverage</div>
+              <div class="text-xs text-secondary mt-1">Harvested vs Required</div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    function confirmDelete() {
+      return confirm(`Are you sure you want to delete user "{{ user.name }}"? This action cannot be undone.`);
+    }
+  </script>
+</body>
+</html>

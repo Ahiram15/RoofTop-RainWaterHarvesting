@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics - Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Enhanced gradient background */
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+      min-height: 100vh;
+    }
+    
+    /* Glass morphism effects */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+    }
+    
+    .glass-button {
+      background: rgba(34, 211, 238, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .glass-button:hover {
+      background: rgba(34, 211, 238, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(34, 211, 238, 0.2);
+    }
+    
+    .sidebar {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-item {
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      margin: 4px 0;
+    }
+    
+    .nav-item:hover, .nav-item.active {
+      background: rgba(34, 211, 238, 0.2);
+      color: #22d3ee;
+    }
+    
+    /* Text colors */
+    .text-primary { color: #22d3ee; }
+    .text-secondary { color: rgba(255, 255, 255, 0.8); }
+    .text-muted { color: rgba(255, 255, 255, 0.6); }
+    
+    /* Chart container styling */
+    .chart-container {
+      position: relative;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    
+    .chart-container canvas {
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar w-64 p-6">
+      <div class="mb-8">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-shield-alt text-2xl text-primary"></i>
+          <div>
+            <h1 class="text-lg font-bold text-white">Admin Panel</h1>
+            <p class="text-xs text-muted">RainWater Harvesting</p>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="space-y-2">
+        <a href="{{ url_for('admin_dashboard') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        
+        <a href="{{ url_for('admin_users') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-users"></i>
+          <span>Users</span>
+        </a>
+        
+        <a href="{{ url_for('admin_analytics') }}" class="nav-item active flex items-center space-x-3 px-4 py-3 text-white">
+          <i class="fas fa-chart-bar"></i>
+          <span>Analytics</span>
+        </a>
+        
+        <a href="{{ url_for('admin_export_users') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-download"></i>
+          <span>Export Data</span>
+        </a>
+        
+        <div class="border-t border-gray-600 my-4"></div>
+        
+        <a href="{{ url_for('index_page') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-home"></i>
+          <span>View Site</span>
+        </a>
+        
+        <a href="{{ url_for('admin_logout') }}" class="nav-item flex items-center space-x-3 px-4 py-3 text-muted hover:text-white">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <!-- Header -->
+      <header class="mb-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-white mb-2">Analytics Dashboard</h1>
+            <p class="text-muted">Comprehensive insights into user data and system usage</p>
+          </div>
+          <div class="flex items-center space-x-4">
+            <a href="{{ url_for('admin_export_users') }}" class="glass-button px-4 py-2 rounded-lg text-white flex items-center space-x-2">
+              <i class="fas fa-download"></i>
+              <span>Export Report</span>
+            </a>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Charts Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Location Distribution Chart -->
+        <div class="glass-card rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+            <i class="fas fa-map-marker-alt text-primary mr-3"></i>
+            Top Locations
+          </h2>
+          <div class="chart-container">
+            <canvas id="locationChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- Property Types Chart -->
+        <div class="glass-card rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+            <i class="fas fa-home text-primary mr-3"></i>
+            Property Types
+          </h2>
+          <div class="chart-container">
+            <canvas id="propertyChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- Roof Types Chart -->
+        <div class="glass-card rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+            <i class="fas fa-building text-primary mr-3"></i>
+            Roof Types Distribution
+          </h2>
+          <div class="chart-container">
+            <canvas id="roofChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- User Growth Chart -->
+        <div class="glass-card rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+            <i class="fas fa-chart-line text-primary mr-3"></i>
+            User Registration Trend
+          </h2>
+          <div class="chart-container">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Detailed Statistics -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Location Statistics -->
+        <div class="glass-card rounded-xl p-6">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+            <i class="fas fa-map text-primary mr-2"></i>
+            Location Insights
+          </h3>
+          <div class="space-y-3">
+            {% for location, count in analytics.location_distribution %}
+            <div class="flex items-center justify-between p-3 rounded-lg bg-white bg-opacity-5">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-primary rounded-full"></div>
+                <span class="text-white text-sm">{{ location }}</span>
+              </div>
+              <div class="text-primary font-bold">{{ count }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <!-- Property Statistics -->
+        <div class="glass-card rounded-xl p-6">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+            <i class="fas fa-home text-primary mr-2"></i>
+            Property Insights
+          </h3>
+          <div class="space-y-3">
+            {% for property_type, count in analytics.property_types %}
+            {% if property_type %}
+            <div class="flex items-center justify-between p-3 rounded-lg bg-white bg-opacity-5">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                <span class="text-white text-sm">{{ property_type }}</span>
+              </div>
+              <div class="text-green-400 font-bold">{{ count }}</div>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        
+        <!-- Roof Type Statistics -->
+        <div class="glass-card rounded-xl p-6">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+            <i class="fas fa-building text-primary mr-2"></i>
+            Roof Type Insights
+          </h3>
+          <div class="space-y-3">
+            {% for roof_type, count in analytics.roof_types %}
+            {% if roof_type %}
+            <div class="flex items-center justify-between p-3 rounded-lg bg-white bg-opacity-5">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-orange-400 rounded-full"></div>
+                <span class="text-white text-sm">{{ roof_type }}</span>
+              </div>
+              <div class="text-orange-400 font-bold">{{ count }}</div>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    // Chart.js default config for dark theme
+    Chart.defaults.color = 'rgba(255, 255, 255, 0.8)';
+    Chart.defaults.backgroundColor = 'rgba(34, 211, 238, 0.1)';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+    
+    // Location Distribution Chart
+    const locationCtx = document.getElementById('locationChart').getContext('2d');
+    new Chart(locationCtx, {
+      type: 'doughnut',
+      data: {
+        labels: [{% for location, count in analytics.location_distribution %}'{{ location }}'{% if not loop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+          data: [{% for location, count in analytics.location_distribution %}{{ count }}{% if not loop.last %},{% endif %}{% endfor %}],
+          backgroundColor: [
+            'rgba(34, 211, 238, 0.8)',
+            'rgba(59, 130, 246, 0.8)',
+            'rgba(34, 197, 94, 0.8)',
+            'rgba(251, 146, 60, 0.8)',
+            'rgba(168, 85, 247, 0.8)',
+            'rgba(236, 72, 153, 0.8)',
+            'rgba(239, 68, 68, 0.8)',
+            'rgba(245, 158, 11, 0.8)'
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 20,
+              usePointStyle: true
+            }
+          }
+        }
+      }
+    });
+    
+    // Property Types Chart
+    const propertyCtx = document.getElementById('propertyChart').getContext('2d');
+    new Chart(propertyCtx, {
+      type: 'bar',
+      data: {
+        labels: [{% for property_type, count in analytics.property_types %}{% if property_type %}'{{ property_type }}'{% if not loop.last %},{% endif %}{% endif %}{% endfor %}],
+        datasets: [{
+          label: 'Count',
+          data: [{% for property_type, count in analytics.property_types %}{% if property_type %}{{ count }}{% if not loop.last %},{% endif %}{% endif %}{% endfor %}],
+          backgroundColor: 'rgba(34, 197, 94, 0.8)',
+          borderColor: 'rgba(34, 197, 94, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            }
+          },
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+    
+    // Roof Types Chart
+    const roofCtx = document.getElementById('roofChart').getContext('2d');
+    new Chart(roofCtx, {
+      type: 'pie',
+      data: {
+        labels: [{% for roof_type, count in analytics.roof_types %}{% if roof_type %}'{{ roof_type }}'{% if not loop.last %},{% endif %}{% endif %}{% endfor %}],
+        datasets: [{
+          data: [{% for roof_type, count in analytics.roof_types %}{% if roof_type %}{{ count }}{% if not loop.last %},{% endif %}{% endif %}{% endfor %}],
+          backgroundColor: [
+            'rgba(251, 146, 60, 0.8)',
+            'rgba(168, 85, 247, 0.8)',
+            'rgba(236, 72, 153, 0.8)',
+            'rgba(34, 211, 238, 0.8)',
+            'rgba(34, 197, 94, 0.8)'
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 20,
+              usePointStyle: true
+            }
+          }
+        }
+      }
+    });
+    
+    // User Growth Chart (simplified for now)
+    const growthCtx = document.getElementById('growthChart').getContext('2d');
+    new Chart(growthCtx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'New Users',
+          data: [12, 19, 3, 5, 2, 3],
+          borderColor: 'rgba(34, 211, 238, 1)',
+          backgroundColor: 'rgba(34, 211, 238, 0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            }
+          },
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

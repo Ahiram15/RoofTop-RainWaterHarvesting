@@ -1,20 +1,32 @@
 import pandas as pd
 from math import radians, sin, cos, sqrt, asin
-from flask import Flask, request, render_template, redirect, url_for, jsonify, send_from_directory, make_response
+from flask import Flask, request, render_template, redirect, url_for, jsonify, send_from_directory, make_response, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
 from fpdf import FPDF, XPos, YPos
 from datetime import datetime
+import bcrypt
+from functools import wraps
 
 # Initialize the Flask app
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests from frontend
 
+# Configure the secret key for sessions
+app.config['SECRET_KEY'] = 'your-secret-key-change-in-production'  # Change this in production
+
 # Configure the database file
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rtrwh_data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'admin_login'
+login_manager.login_message = 'Please log in to access the admin panel.'
 
 # --- Path Configuration ---
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -43,6 +55,40 @@ class UserInput(db.Model):
     existing_water_sources = db.Column(db.String(200))  # NEW FIELD
     budget_preference = db.Column(db.String(50))  # NEW FIELD
     intended_use = db.Column(db.String(100))  # NEW FIELD
+
+# --- Admin User Model ---
+class AdminUser(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    role = db.Column(db.String(50), default='admin')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_login = db.Column(db.DateTime)
+    
+    def set_password(self, password):
+        """Hash and set the password"""
+        password_bytes = password.encode('utf-8')
+        self.password_hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode('utf-8')
+    
+    def check_password(self, password):
+        """Check if the provided password matches the hash"""
+        password_bytes = password.encode('utf-8')
+        return bcrypt.checkpw(password_bytes, self.password_hash.encode('utf-8'))
+
+# Flask-Login user loader
+@login_manager.user_loader
+def load_user(user_id):
+    return AdminUser.query.get(int(user_id))
+
+# Admin required decorator
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # --- Core Calculation Functions ---
 
@@ -671,8 +717,169 @@ def api_calculate():
     
     return jsonify(result)
 
+# --- ADMIN ROUTES ---
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('admin_dashboard'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        remember = bool(request.form.get('remember'))
+        
+        if not username or not password:
+            flash('Please enter both username and password.', 'error')
+            return render_template('admin/login.html')
+        
+        user = AdminUser.query.filter_by(username=username).first()
+        
+        if user and user.check_password(password):
+            login_user(user, remember=remember)
+            user.last_login = datetime.utcnow()
+            db.session.commit()
+            
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('admin_dashboard'))
+        else:
+            flash('Invalid username or password.', 'error')
+    
+    return render_template('admin/login.html')
+
+@app.route('/admin/logout')
+@login_required
+def admin_logout():
+    logout_user()
+    flash('You have been logged out successfully.', 'info')
+    return redirect(url_for('admin_login'))
+
+@app.route('/admin/dashboard')
+@admin_required
+def admin_dashboard():
+    # Get dashboard statistics
+    total_users = UserInput.query.count()
+    recent_users = UserInput.query.order_by(UserInput.id.desc()).limit(5).all()
+    
+    # Basic analytics
+    stats = {
+        'total_users': total_users,
+        'total_admins': AdminUser.query.count(),
+        'recent_signups': UserInput.query.filter(UserInput.id > max(0, total_users - 30)).count(),
+        'popular_locations': db.session.query(UserInput.location_name, db.func.count(UserInput.location_name).label('count')).group_by(UserInput.location_name).order_by(db.text('count DESC')).limit(5).all()
+    }
+    
+    return render_template('admin/dashboard.html', stats=stats, recent_users=recent_users)
+
+@app.route('/admin/users')
+@admin_required
+def admin_users():
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '', type=str)
+    
+    query = UserInput.query
+    if search:
+        query = query.filter(UserInput.name.contains(search) | UserInput.location_name.contains(search))
+    
+    users = query.order_by(UserInput.id.desc()).paginate(
+        page=page, per_page=20, error_out=False
+    )
+    
+    return render_template('admin/users.html', users=users, search=search)
+
+@app.route('/admin/users/<int:user_id>')
+@admin_required
+def admin_user_detail(user_id):
+    user = UserInput.query.get_or_404(user_id)
+    return render_template('admin/user_detail.html', user=user)
+
+@app.route('/admin/users/<int:user_id>/delete', methods=['POST'])
+@admin_required
+def admin_delete_user(user_id):
+    user = UserInput.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'User {user.name} has been deleted successfully.', 'success')
+    return redirect(url_for('admin_users'))
+
+@app.route('/admin/analytics')
+@admin_required
+def admin_analytics():
+    # Get analytics data
+    analytics_data = {
+        'user_growth': db.session.query(
+            db.func.date(UserInput.id).label('date'),
+            db.func.count(UserInput.id).label('count')
+        ).group_by(db.text('date')).order_by(db.text('date')).all(),
+        
+        'location_distribution': db.session.query(
+            UserInput.location_name,
+            db.func.count(UserInput.location_name).label('count')
+        ).group_by(UserInput.location_name).order_by(db.text('count DESC')).limit(10).all(),
+        
+        'property_types': db.session.query(
+            UserInput.property_type,
+            db.func.count(UserInput.property_type).label('count')
+        ).group_by(UserInput.property_type).order_by(db.text('count DESC')).all(),
+        
+        'roof_types': db.session.query(
+            UserInput.roof_type,
+            db.func.count(UserInput.roof_type).label('count')
+        ).group_by(UserInput.roof_type).order_by(db.text('count DESC')).all()
+    }
+    
+    return render_template('admin/analytics.html', analytics=analytics_data)
+
+@app.route('/admin/export/users')
+@admin_required
+def admin_export_users():
+    """Export all user data as CSV"""
+    import csv
+    import io
+    
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write header
+    writer.writerow(['ID', 'Name', 'Location', 'Latitude', 'Longitude', 'Household Size', 
+                     'Rooftop Area', 'Open Space Area', 'Roof Type', 'Property Type', 
+                     'Budget Preference', 'Intended Use'])
+    
+    # Write data
+    users = UserInput.query.all()
+    for user in users:
+        writer.writerow([
+            user.id, user.name, user.location_name, user.user_lat, user.user_lon,
+            user.household_size, user.rooftop_area, user.open_space_area, 
+            user.roof_type, user.property_type, user.budget_preference, user.intended_use
+        ])
+    
+    output.seek(0)
+    
+    response = make_response(output.getvalue())
+    response.headers['Content-Type'] = 'text/csv'
+    response.headers['Content-Disposition'] = f'attachment; filename=users_export_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
+    
+    return response
+
 if __name__ == '__main__':
     with app.app_context():
         # Create the database tables if they don't exist
         db.create_all()
-    app.run(debug=True, port=5000)
+        
+        # Create default admin user if no admin exists
+        if not AdminUser.query.first():
+            admin = AdminUser(
+                username='admin',
+                email='admin@rainwaterharvesting.com',
+                role='admin'
+            )
+            admin.set_password('admin123')  # Change this password!
+            db.session.add(admin)
+            db.session.commit()
+            print("Default admin user created:")
+            print("Username: admin")
+            print("Password: admin123")
+            print("Please change this password after first login!")
+    
+    app.run(debug=True, host='0.0.0.0', port=5000)
